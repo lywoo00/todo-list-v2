@@ -1,7 +1,8 @@
 // import './App.css'
-import SideBar from './comnents/SideBar/SideBar'
-import TodoList from './comnents/TodoList/TodoList'
-import DarkModeToggle from './comnents/DarkModeButton/DarkModeButton'
+import SideBar from './components/SideBar/SideBar'
+import TodoList from './components/TodoList/TodoList'
+import DarkModeToggle from './components/DarkModeButton/DarkModeButton'
+import AddPopup from './components/AddPopup/AddPopup'
 import './css/tailwindcss/tailwind.css'
 
 function App() {
@@ -11,6 +12,7 @@ function App() {
       <SideBar />
       <TodoList />
       <DarkModeToggle />
+      {/* <AddPopup /> */}
     </div>
   )
 }
