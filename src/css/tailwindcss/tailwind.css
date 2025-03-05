@@ -1,9 +1,27 @@
 @import "tailwindcss";
 /* @custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *)); */
 @custom-variant dark (&:where(.dark, .dark *));
+@theme {
+    /* text */
+    --text-xsmall: 12px;
+    --text-small: 14px;
+    --text-default: 16px;
+    --text-large: 18px;
+    --text-xlarge: 20px;
+    --text-xxlarge: 22px;
+
+    /* color */
+    --color-172b4d: #172b4d;
+    --color-666: #666666;
+    --color-f1f1f1: #f1f1f1;
+
+    /* round */
+    --radius-basic: 10px
+  }
+
 body {
-    background: #f1f1f1;
-    color: #172b4d;
+    background: var(--color-f1f1f1);
+    color: var(--color-172b4d);
     line-height: 1.4;
 }
 button {cursor: pointer;}

@@ -8,11 +8,11 @@ import './css/tailwindcss/tailwind.css'
 function App() {
 
   return (
-    <div className='main flex dark:bg-[#172b4d]'>
+    <div className='main flex dark:bg-172b4d'>
       <SideBar />
       <TodoList />
       <DarkModeToggle />
-      {/* <AddPopup /> */}
+      <AddPopup />
     </div>
   )
 }
