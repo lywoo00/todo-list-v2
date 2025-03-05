@@ -1,0 +1,3 @@
+const initailState = {
+  isOpen: false
+}

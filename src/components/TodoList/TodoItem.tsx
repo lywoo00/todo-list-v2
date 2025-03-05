@@ -1,5 +1,4 @@
-import React from "react";
-import { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { BsCheck } from "react-icons/bs";
 import { BsTrash } from "react-icons/bs";
 import { BsStar } from "react-icons/bs";
@@ -9,21 +8,47 @@ import { BsPencil } from "react-icons/bs";
 import { useTodoStore } from "../../store/useTodo";
 import { usePopupStore } from "../../store/usePopup";
 
-function TodoItem({ todo, openTooltipId, toggleTooltip, setOpenTooltipId }) {
+interface Todo {
+  id: number;
+  title: string;
+  date: string;
+  content: string;
+}
+
+interface TodoItemProps {
+  todo: Todo;
+  openTooltipId: number | null;
+  toggleTooltip: (id: number) => void;
+  setOpenTooltipId: (id: number | null) => void;
+}
+
+const TodoItem: React.FC<TodoItemProps> = ({
+  todo,
+  openTooltipId,
+  toggleTooltip,
+  setOpenTooltipId,
+}) => {
   const removeTodo = useTodoStore((state) => state.removeTodo);
-  const removeTodoItem = (id) => {
+  const removeTodoItem = (id: number) => {
     removeTodo(id);
   };
-
   const { openPopup } = usePopupStore();
   const { setModiTodo } = useTodoStore();
 
   const openModiPopup = () => {
     setModiTodo(todo);
     openPopup();
-    setOpenTooltipId(false);
+    setOpenTooltipId(null);
+  };
+  const [isImportant, setIsImportants] = useState(false);
+  const toggleImportant = () => {
+    setIsImportants((prev) => !prev);
+    console.log(isImportant);
   };
 
+  // useEffect(() => {
+  //   toggleImportant()
+  // },[isImportant])
   return (
     <div
       key={todo.id}
@@ -43,9 +68,8 @@ function TodoItem({ todo, openTooltipId, toggleTooltip, setOpenTooltipId }) {
         </span>
       </div>
       <div className="flex">
-        <button title="중요" className="group ">
-          <BsStar className="group-hover:hidden " />
-          <BsStarFill className="hidden group-hover:block" />
+        <button title="중요" onClick={toggleImportant}>
+          {isImportant ? <BsStarFill /> : <BsStar />}
         </button>
         <div className="relative ml-[10px]">
           <button className="block" onClick={() => toggleTooltip(todo.id)}>
@@ -73,6 +97,6 @@ function TodoItem({ todo, openTooltipId, toggleTooltip, setOpenTooltipId }) {
       </div>
     </div>
   );
-}
+};
 
 export default TodoItem;

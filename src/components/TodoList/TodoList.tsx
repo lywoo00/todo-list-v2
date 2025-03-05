@@ -5,23 +5,28 @@ import TodoItem from "./TodoItem";
 import TodoCompleted from "./TodoCompleted";
 import { BsCheckCircle } from "react-icons/bs";
 import { BsCheckCircleFill } from "react-icons/bs";
-import { BsCheck } from "react-icons/bs";
-import { BsTrash } from "react-icons/bs";
-import { BsStarFill } from "react-icons/bs";
-import { BsThreeDotsVertical } from "react-icons/bs";
-import { BsChevronUp } from "react-icons/bs";
-import { BsChevronDown } from "react-icons/bs";
+import { BsTrash, BsStarFill, BsThreeDotsVertical } from "react-icons/bs";
 
-function TodoList() {
-  const [fullOptionTooltip, setFullOptionTooltip] = useState(false);
+interface Todo {
+  id: number;
+  title: string;
+  date: string;
+  content: string;
+  // isComplted: boolean;
+  // isImportant: boolean;
+}
+
+const TodoList: React.FC = () => {
+  const [fullOptionTooltip, setFullOptionTooltip] = useState<boolean>(false);
   const toggleFullOptionTooltip = () => {
     setFullOptionTooltip((prev) => !prev);
     setOpenTooltipId(null);
   };
-  const { todos } = useTodoStore();
 
-  const [openTooltipId, setOpenTooltipId] = useState(null);
-  const toggleTooltip = (id) => {
+  const todos = useTodoStore((state) => state.todos);
+
+  const [openTooltipId, setOpenTooltipId] = useState<number | null>(null);
+  const toggleTooltip = (id: number) => {
     setOpenTooltipId((prevId) => (prevId === id ? null : id));
     setFullOptionTooltip(false);
   };
@@ -64,7 +69,7 @@ function TodoList() {
               <p className="ml-[10px] text-large">전체 완료</p>
             </button>
             {/* 할 일 아이템[S] */}
-            {todos.map((todo) => (
+            {todos.map((todo: Todo) => (
               <TodoItem
                 key={todo.id}
                 todo={todo}
@@ -84,6 +89,6 @@ function TodoList() {
       </div>
     </>
   );
-}
+};
 
 export default TodoList;

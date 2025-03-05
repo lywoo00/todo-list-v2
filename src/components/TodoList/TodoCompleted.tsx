@@ -5,7 +5,7 @@ import { BsTrash } from "react-icons/bs";
 import { BsChevronUp } from "react-icons/bs";
 import { BsChevronDown } from "react-icons/bs";
 
-function TodoCompleted() {
+const TodoCompleted: React.FC = () => {
   const [toggleCompleted, setToggleCompleted] = useState(false);
   const toggleCompletedWork = () => {
     setToggleCompleted((prev) => !prev);
@@ -44,6 +44,6 @@ function TodoCompleted() {
       ) : null}
     </div>
   );
-}
+};
 
 export default TodoCompleted;

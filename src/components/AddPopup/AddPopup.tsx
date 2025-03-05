@@ -3,13 +3,13 @@ import { BsXLg } from "react-icons/bs";
 import { usePopupStore } from "../../store/usePopup";
 import { useTodoStore } from "../../store/useTodo";
 
-const AddPopup = () => {
-  const [title, setTitle] = useState("");
-  const [date, setDate] = useState("");
-  const [content, setContent] = useState("");
+const AddPopup: React.FC = () => {
+  const [title, setTitle] = useState<string>("");
+  const [date, setDate] = useState<string>("");
+  const [content, setContent] = useState<string>("");
   const addTodo = useTodoStore((state) => state.addTodo);
-  const motdifyTodo = useTodoStore((state) => state.motdifyTodo);
-  const { todos, modiTodo } = useTodoStore();
+  const modifyTodo = useTodoStore((state) => state.modifyTodo);
+  const { modiTodo } = useTodoStore();
 
   useEffect(() => {
     if (modiTodo) {
@@ -23,7 +23,7 @@ const AddPopup = () => {
     }
   }, [modiTodo]);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: { preventDefault: () => void }) => {
     e.preventDefault();
     if (!title || !date || !content) {
       alert("항목을 모두 입력 해주세요");
@@ -36,7 +36,7 @@ const AddPopup = () => {
       setContent("");
       closePopup();
     } else {
-      motdifyTodo(modiTodo.id, title, date, content);
+      modifyTodo(modiTodo.id, title, date, content);
       closePopup();
     }
   };
