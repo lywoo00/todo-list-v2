@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useState } from "react";
 import { useTodoStore } from "../../store/useTodo";
 import TodoItem from "./TodoItem";
@@ -12,24 +12,35 @@ interface Todo {
   title: string;
   date: string;
   content: string;
+  isImportant: boolean;
   // isComplted: boolean;
-  // isImportant: boolean;
 }
 
 const TodoList: React.FC = () => {
+  const todos = useTodoStore((state) => state.todos);
   const [fullOptionTooltip, setFullOptionTooltip] = useState<boolean>(false);
   const toggleFullOptionTooltip = () => {
     setFullOptionTooltip((prev) => !prev);
-    setOpenTooltipId(null);
   };
-
-  const todos = useTodoStore((state) => state.todos);
-
+  useEffect(() => {
+    if (fullOptionTooltip) {
+      setOpenTooltipId(null);
+    }
+  }, [fullOptionTooltip]);
   const [openTooltipId, setOpenTooltipId] = useState<number | null>(null);
+
   const toggleTooltip = (id: number) => {
     setOpenTooltipId((prevId) => (prevId === id ? null : id));
     setFullOptionTooltip(false);
   };
+
+  const toggleImportant = useTodoStore<(id: number) => void>(
+    (state) => state.toggleImportant
+  );
+
+  const setImportantTodo = useTodoStore<() => void>(
+    (state) => state.setImportantTodo
+  );
 
   return (
     <>
@@ -52,7 +63,10 @@ const TodoList: React.FC = () => {
                     <BsTrash />
                     <p className="ml-[5px]">전체 할 일 삭제</p>
                   </button>
-                  <button className="flex w-full items-center py-[10px]">
+                  <button
+                    className="flex w-full items-center py-[10px]"
+                    onClick={() => setImportantTodo()}
+                  >
                     <BsStarFill />
                     <p className="ml-[5px]">중요한 일 보기</p>
                   </button>
@@ -76,6 +90,7 @@ const TodoList: React.FC = () => {
                 openTooltipId={openTooltipId}
                 toggleTooltip={toggleTooltip}
                 setOpenTooltipId={setOpenTooltipId}
+                toggleImportant={toggleImportant}
               />
             ))}
             {/* 할 일 아이템[E] */}
