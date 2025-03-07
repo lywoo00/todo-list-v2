@@ -14,6 +14,7 @@ interface Todo {
   date: string;
   content: string;
   isImportant: boolean;
+  isCompleted: boolean;
 }
 
 interface TodoItemProps {
@@ -22,6 +23,7 @@ interface TodoItemProps {
   toggleTooltip: (id: number) => void;
   setOpenTooltipId: (id: number | null) => void;
   toggleImportant: (id: number) => void;
+  // setCompletedTodo: (id: number) => void;
 }
 
 const TodoItem: React.FC<TodoItemProps> = ({
@@ -36,8 +38,11 @@ const TodoItem: React.FC<TodoItemProps> = ({
     removeTodo(id);
   };
 
+  const setCompletedTodo = useTodoStore((state) => state.setCompletedTodo);
+
   const { openPopup } = usePopupStore();
   const { setModiTodo } = useTodoStore();
+  // const { isComplted } = useTodoStore();
 
   const openModiPopup = () => {
     setModiTodo(todo);
@@ -50,6 +55,7 @@ const TodoItem: React.FC<TodoItemProps> = ({
       <button
         title="완료 체크"
         className="text-gray-300 dark:text-gray-400 text-xlarge hover:text-defualt group"
+        onClick={() => setCompletedTodo(todo.id)}
       >
         <BsCheck className="group-hover:text-172b4d" />
       </button>
