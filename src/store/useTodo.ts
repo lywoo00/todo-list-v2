@@ -41,6 +41,7 @@ export const useTodoStore = create<TodoStore>((set) => ({
   filteredTodos: [],
   completedTodos: [],
   updatedTodos: [],
+
   addTodo: (title, date, content) =>
     set((state) => ({
       todos: [
@@ -102,7 +103,10 @@ export const useTodoStore = create<TodoStore>((set) => ({
   setImportantTodo: () =>
     set((state) => ({
       filteredTodos: state.todos.filter((todo) => todo.isImportant == false), //filteredTodos 중요하지 않은 일을 담아둠
-      todos: state.todos.filter((todo) => todo.isImportant == true), // todos에 중요한 일만 필터
+
+      todos: state.todos.filter((todo) => todo.isImportant == true).length
+        ? state.todos.filter((todo) => todo.isImportant == true)
+        : state.todos, // 중요표시 한 할 일이 있을 떄만 필터링 함
     })),
 
   setAllTodo: () =>
