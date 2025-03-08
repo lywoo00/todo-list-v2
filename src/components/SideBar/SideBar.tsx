@@ -1,4 +1,3 @@
-import React from "react";
 import { BsCheckCircle } from "react-icons/bs";
 import { BsStar } from "react-icons/bs";
 // import { BsStarFill } from "react-icons/bs";
