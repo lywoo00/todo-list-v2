@@ -21,7 +21,7 @@ function SideBar() {
     <div className="w-[236px] h-lvh bg-white dark:bg-gray-300 p-[20px]">
       <h1 className="text-xxlarge text-center">할 일</h1>
       <button
-        className="flex py-[20px] px-[30px] rounded-basic shadow-sm mt-[30px] hover:bg-f1f1f1"
+        className="flex py-[20px] px-[30px] rounded-basic shadow-sm mt-[30px] hover:bg-f1f1f1 dark:hover:bg-172b4d dark:hover:text-white"
         onClick={() => openAddPopup()}
       >
         <p>+</p>

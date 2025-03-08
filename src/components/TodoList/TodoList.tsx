@@ -47,10 +47,6 @@ const TodoList: React.FC = () => {
     (state) => state.setCompletedAllTodo
   );
 
-  // const setCompletedTodo = useTodoStore<(id: number) => void>(
-  //   (state) => state.setCompletedTodo
-  // );
-
   useEffect(() => {
     setFullOptionTooltip(false);
     setOpenTooltipId(null);
@@ -71,7 +67,7 @@ const TodoList: React.FC = () => {
                 <BsThreeDotsVertical className="" />
               </button>
               {fullOptionTooltip ? (
-                <div className="absolute w-[200px] bg-white shadow-sm px-[20px] py-[10px] rounded-basic top-[100%] right-0 z-11">
+                <div className="absolute w-[200px] bg-white dark:bg-gray-300 shadow-sm px-[20px] py-[10px] rounded-basic top-[100%] right-0 z-11">
                   <button
                     className="flex w-full items-center py-[10px] border-b border-[#dfdfdf]"
                     onClick={() => removeTodoAll()}

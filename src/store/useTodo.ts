@@ -32,6 +32,7 @@ interface TodoStore {
   setCompletedTodo: (id: number) => void;
   removeCompletedTodo: (id: number) => void;
   setCompletedAllTodo: () => void;
+  setIncompleteTodo: (id: number) => void;
 }
 
 // ✅ Zustand 스토어 생성
@@ -102,11 +103,13 @@ export const useTodoStore = create<TodoStore>((set) => ({
 
   setImportantTodo: () =>
     set((state) => ({
-      filteredTodos: state.todos.filter((todo) => todo.isImportant == false), //filteredTodos 중요하지 않은 일을 담아둠
+      filteredTodos: state.todos.filter((todo) => !todo.isImportant).length
+        ? state.todos.filter((todo) => todo.isImportant == false)
+        : state.filteredTodos, //filteredTodos 중요하지 않은 일이 있을 때만  담아둠
 
       todos: state.todos.filter((todo) => todo.isImportant == true).length
         ? state.todos.filter((todo) => todo.isImportant == true)
-        : state.todos, // 중요표시 한 할 일이 있을 떄만 필터링 함
+        : state.todos, // 중요표시 한 할 일이 있을 때만 필터링 함
     })),
 
   setAllTodo: () =>
@@ -155,4 +158,21 @@ export const useTodoStore = create<TodoStore>((set) => ({
     set((state) => ({
       completedTodos: state.completedTodos.filter((todo) => todo.id !== id),
     })),
+
+  setIncompleteTodo: (id) =>
+    set((state) => {
+      state.updatedTodos = state.completedTodos.map((todo) =>
+        todo.id === id ? { ...todo, isCompleted: false } : todo
+      );
+
+      return {
+        completedTodos: [
+          ...state.updatedTodos.filter((todo) => todo.isCompleted),
+        ], // 완료 상태 할 일만 필터
+        todos: [
+          ...state.todos,
+          ...state.updatedTodos.filter((todo) => !todo.isCompleted),
+        ], // 미완료된 할 일만 필터
+      };
+    }),
 }));

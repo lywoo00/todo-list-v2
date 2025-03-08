@@ -22,6 +22,8 @@ const TodoCompleted: React.FC = () => {
     (state) => state.removeCompletedTodo
   );
 
+  const setIncompleteTodo = useTodoStore((state) => state.setIncompleteTodo);
+
   return (
     <div className="mt-[20px]">
       <button
@@ -30,30 +32,35 @@ const TodoCompleted: React.FC = () => {
           toggleCompletedWork();
         }}
       >
-        <p className="text-small/[1.4] mr-[10px]">완료된 일</p>
+        <p className="text-small/[1.4] mr-[10px]">
+          완료된 일({completedTodos.length})
+        </p>
         {toggleCompleted ? <BsChevronUp /> : <BsChevronDown />}
       </button>
 
       {toggleCompleted
-        ? completedTodos.map((todo: Todo) => (
+        ? completedTodos.map((completedTodo: Todo) => (
             <div className="flex items-start p-[10px] hover:bg-f1f1f1 rounded-basic">
               <button
                 title="미완료 상태로 변경"
                 className="text-gray-300 dark:text-gray-400 text-large hover:text-172b4d"
+                onClick={() => setIncompleteTodo(completedTodo.id)}
               >
                 <BsCheck />
               </button>
               <div className="ml-[10px] w-full">
-                <p className="text-default/[1.4] line-through">{todo.title}</p>
-                <p className="text-666 mt-[6px]">{todo.content}</p>
+                <p className="text-default/[1.4] line-through">
+                  {completedTodo.title}
+                </p>
+                <p className="text-666 mt-[6px]">{completedTodo.content}</p>
                 <span className="border inline-block rounded-basic text-xsmall/[1] px-[10px] py-[4px] mt-[6px] bg-white dark:bg-172b4d dark:text-gray-300">
-                  {todo.date}
+                  {completedTodo.date}
                 </span>
               </div>
               <button
                 title="삭제"
                 className=""
-                onClick={() => removeCompletedTodo(todo.id)}
+                onClick={() => removeCompletedTodo(completedTodo.id)}
               >
                 <BsTrash />
               </button>

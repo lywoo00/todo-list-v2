@@ -49,7 +49,9 @@ const TodoItem: React.FC<TodoItemProps> = ({
     openPopup();
     setOpenTooltipId(null);
   };
-  console.log(todo);
+
+  const { filteredTodos } = useTodoStore();
+  console.log(filteredTodos);
   return (
     <div className="flex items-start p-[10px] hover:bg-f1f1f1 rounded-basic">
       <button
