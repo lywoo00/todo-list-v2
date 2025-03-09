@@ -1,20 +1,36 @@
-// import './App.css'
-import SideBar from './components/SideBar/SideBar'
-import TodoList from './components/TodoList/TodoList'
-import DarkModeToggle from './components/DarkModeButton/DarkModeButton'
-import AddPopup from './components/AddPopup/AddPopup'
-import './css/tailwindcss/tailwind.css'
+import { useState } from "react";
+
+import { Routes, Route } from "react-router-dom";
+import Main from "./pages/main";
+import Login from "./pages/login/Login";
+import SignUp from "./pages/signup/SignUp";
+import "./css/tailwindcss/tailwind.css";
 
 function App() {
-
+  // firebase Auth가 인증되었으면 true
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+  console.log(isAuthenticated);
   return (
-    <div className='main flex dark:bg-172b4d'>
-      <SideBar />
-      <TodoList />
-      <DarkModeToggle />
-      <AddPopup />
-    </div>
-  )
+    <>
+      <Routes>
+        {isAuthenticated ? (
+          <>
+            <Route path="/todo-list-v2/" element={<Main />} />
+            <Route path="/todo-list-v2/login" element={<Login />} />
+            <Route path="/todo-list-v2/signup" element={<SignUp />} />
+            <Route path="*" element={<Main />} />
+          </>
+        ) : (
+          <>
+            <Route path="/todo-list-v2/login" element={<Login />} />
+            <Route path="/todo-list-v2/signup" element={<SignUp />} />
+            <Route path="*" element={<Login />} />
+          </>
+        )}
+      </Routes>
+      <button onClick={() => setIsAuthenticated((prev) => !prev)}></button>
+    </>
+  );
 }
 
-export default App
+export default App;

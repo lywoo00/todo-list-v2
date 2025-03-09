@@ -20,7 +20,13 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
-    "noUncheckedSideEffectImports": true
+    "noUncheckedSideEffectImports": true,
+
+    /* Firebase Path Alias */
+    "baseUrl": "./",
+    "paths": {
+      "firebaseApp": ["firebaseApp/*"]
+    }
   },
-  "include": ["src"]
+  "include": ["src", "firebaseApp"]
 }
