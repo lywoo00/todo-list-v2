@@ -10,6 +10,7 @@ const AddPopup: React.FC = () => {
   const addTodo = useTodoStore((state) => state.addTodo);
   const modifyTodo = useTodoStore((state) => state.modifyTodo);
   const { modiTodo } = useTodoStore();
+  const today = new Date().toISOString().split("T")[0];
 
   useEffect(() => {
     if (modiTodo) {
@@ -25,10 +26,12 @@ const AddPopup: React.FC = () => {
 
   const handleSubmit = (e: { preventDefault: () => void }) => {
     e.preventDefault();
+
     if (!title || !date || !content) {
       alert("항목을 모두 입력 해주세요");
       return;
     }
+
     if (!modiTodo) {
       addTodo(title, date, content);
       setTitle("");
@@ -45,7 +48,7 @@ const AddPopup: React.FC = () => {
 
   if (!isOpen) return null;
   return (
-    <div className='add-pop fixed z-[10] w-lvw h-lvh before:content-[""]  before:absolute before:w-full before:h-full before:bg-black before:opacity-[0.3] before:z-[-1] flex items-center justify-center'>
+    <div className='add-pop fixed z-[99] w-lvw h-lvh before:content-[""]  before:absolute before:w-full before:h-full before:bg-black before:opacity-[0.3] before:z-[-1] flex items-center justify-center'>
       <div className="relative bg-white w-[500px] max-w-[500px] p-[20px] pt-[40px] rounded-basic">
         <form onSubmit={handleSubmit}>
           <input
@@ -67,6 +70,10 @@ const AddPopup: React.FC = () => {
               className="bg-[#f1f1f1] py-[9px] px-[7px] text-[#666] rounded-[10px]"
               value={date}
               onChange={(e) => {
+                if (today > e.target.value) {
+                  alert("지난 날짜는 선택할 수 없습니다.");
+                  return;
+                }
                 setDate(e.target.value);
               }}
             />

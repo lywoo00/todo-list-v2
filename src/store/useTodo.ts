@@ -120,7 +120,7 @@ export const useTodoStore = create<TodoStore>((set) => ({
           (filteredTodo) =>
             !state.todos.some((todo) => todo.id === filteredTodo.id)
         ),
-      ], // todos에 중복되지 않은 filteredTodos에 필터 된 일을 복사 이
+      ], // todos에 중복되지 않은 filteredTodos에 필터 된 일을 복사
     })),
 
   setCompletedTodo: (id) =>
