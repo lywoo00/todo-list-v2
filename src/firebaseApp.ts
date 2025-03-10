@@ -1,4 +1,7 @@
-import { initializeApp } from "firebase/app";
+import { initializeApp, FirebaseApp, getApp, getApps } from "firebase/app";
+import { getAuth } from "firebase/auth";
+
+export let app: FirebaseApp;
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
@@ -10,7 +13,12 @@ const firebaseConfig = {
   appId: import.meta.env.VITE_APP_ID,
 };
 
+if (getApps().length > 0) {
+  app = getApp();
+} else {
+  app = initializeApp(firebaseConfig);
+}
 // Initialize Firebase
-const firebase = initializeApp(firebaseConfig);
+export const auth = getAuth(app);
 
-export default firebase;
+export default app;

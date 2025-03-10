@@ -40,7 +40,10 @@ const TodoCompleted: React.FC = () => {
 
       {toggleCompleted
         ? completedTodos.map((completedTodo: Todo) => (
-            <div className="flex items-start p-[10px] hover:bg-f1f1f1 rounded-basic">
+            <div
+              key={completedTodo.id}
+              className="flex items-start p-[10px] hover:bg-f1f1f1 rounded-basic"
+            >
               <button
                 title="미완료 상태로 변경"
                 className="text-gray-300 dark:text-gray-400 text-large hover:text-172b4d"

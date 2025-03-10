@@ -5,12 +5,14 @@ import AddPopup from "../../components/AddPopup/AddPopup";
 
 function Main() {
   return (
-    <div className="main flex dark:bg-172b4d">
-      <SideBar />
-      <TodoList />
-      <DarkModeToggle />
-      <AddPopup />
-    </div>
+    <>
+      <div className="flex dark:bg-172b4d relative">
+        <SideBar />
+        <TodoList />
+        <DarkModeToggle />
+        <AddPopup />
+      </div>
+    </>
   );
 }
 

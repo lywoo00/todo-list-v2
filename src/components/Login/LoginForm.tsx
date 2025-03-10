@@ -1,5 +1,55 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useState } from "react";
+import { toast } from "react-toastify";
+import { auth } from "../../firebaseApp";
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { FirebaseError } from "firebase/app";
 const LoginForm = () => {
+  const [error, setError] = useState<string>("");
+  const [userEmail, setUserEmail] = useState<string>("");
+  const [userPw, setUserPw] = useState<string>("");
+  const navigate = useNavigate();
+
+  const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    try {
+      await signInWithEmailAndPassword(auth, userEmail, userPw);
+      navigate("/todo-list-v2/");
+      toast.success("로그인에 성공했습니다.");
+    } catch (error: unknown) {
+      if (error instanceof FirebaseError) {
+        toast.error(`로그인 실패 ${error?.code}`);
+      } else {
+        toast.error("알 수 없는 오류가 발생했습니다.");
+      }
+    }
+  };
+
+  const onchange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const {
+      target: { name, value },
+    } = e;
+
+    if (name === "userEmail") {
+      setUserEmail(value);
+      const validEmailRegex =
+        /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+      if (!value?.match(validEmailRegex)) {
+        setError("이메일 형식이 올바르지 않습니다.");
+      } else {
+        setError("");
+      }
+    }
+    if (name === "userPW") {
+      setUserPw(value);
+      if (value?.length < 8) {
+        setError("비밀번호는 8자리 이상으로 입력 해주세요");
+      } else {
+        setError("");
+      }
+    }
+  };
   return (
     <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-sm">
@@ -9,49 +59,51 @@ const LoginForm = () => {
       </div>
 
       <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-        <form action="#" method="POST" className="space-y-6">
+        <form onSubmit={onSubmit} className="space-y-6">
           <div>
-            <label htmlFor="email" className="block text-sm/6 font-medium">
+            <label htmlFor="userEmail" className="block text-sm/6 font-medium">
               이메일
             </label>
             <div className="mt-2">
               <input
-                id="email"
-                name="email"
+                id="userEmail"
+                name="userEmail"
                 type="email"
+                value={userEmail}
+                onChange={onchange}
                 required
-                autoComplete="email"
+                autoComplete="userEmail"
                 className="block w-full rounded-md bg-white px-3 py-1.5 text-base outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-172b4d sm:text-sm/6"
               />
             </div>
           </div>
-
           <div>
             <div className="flex items-center justify-between">
-              <label htmlFor="password" className="block text-sm/6 font-medium">
+              <label htmlFor="userPW" className="block text-sm/6 font-medium">
                 비민번호
               </label>
-              {/* <div className="text-sm">
-                  <a href="#" className="font-semibold text-172b4d">
-                    비밀번호 찾기
-                  </a>
-                </div> */}
             </div>
             <div className="mt-2">
               <input
-                id="password"
-                name="password"
+                id="userPW"
+                name="userPW"
                 type="password"
+                value={userPw}
+                onChange={onchange}
                 required
-                autoComplete="current-password"
+                autoComplete="current-userPW"
                 className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-172b4d sm:text-sm/6"
               />
             </div>
+            {error && error?.length > 0 && (
+              <p className="text-red-500 text-small">{error}</p>
+            )}
           </div>
 
           <div className="mb-[10px]">
             <button
               type="submit"
+              disabled={error?.length > 0}
               className="flex w-full justify-center rounded-md bg-172b4d px-3 py-1.5 text-sm/6 font-semibold text-white shadow-xs focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-172b4d"
             >
               로그인
