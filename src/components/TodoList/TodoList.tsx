@@ -17,13 +17,19 @@ interface Todo {
 }
 
 const TodoList: React.FC = () => {
-  const todos = useTodoStore((state) => state.todos);
+  const {
+    todos,
+    toggleImportant,
+    setImportantTodo,
+    removeTodoAll,
+    setCompletedAllTodo,
+  } = useTodoStore();
+
   const [fullOptionTooltip, setFullOptionTooltip] = useState<boolean>(false);
   const toggleFullOptionTooltip = () => {
     setFullOptionTooltip((prev) => !prev);
     setOpenTooltipId(null);
   };
-
   const [openTooltipId, setOpenTooltipId] = useState<number | null>(null);
 
   const toggleTooltip = (id: number) => {
@@ -31,26 +37,11 @@ const TodoList: React.FC = () => {
     setFullOptionTooltip(false);
   };
 
-  const toggleImportant = useTodoStore<(id: number) => void>(
-    (state) => state.toggleImportant
-  );
-
-  const setImportantTodo = useTodoStore<() => void>(
-    (state) => state.setImportantTodo
-  );
-
-  const removeTodoAll = useTodoStore<() => void>(
-    (state) => state.removeTodoAll
-  );
-
-  const setCompletedAllTodo = useTodoStore<() => void>(
-    (state) => state.setCompletedAllTodo
-  );
-
   useEffect(() => {
     setFullOptionTooltip(false);
     setOpenTooltipId(null);
-  }, [todos]); // todos가 변경되면 팝업 닫기 나중에 더 좋은 방법 있나 생각하기
+  }, [todos]); // todos가 변경되면 툴팁 닫기 나중에 더 좋은 방법 있나 생각하기
+
   return (
     <>
       <div className="w-full px-[20px]">

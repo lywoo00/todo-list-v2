@@ -23,7 +23,6 @@ interface TodoItemProps {
   toggleTooltip: (id: number) => void;
   setOpenTooltipId: (id: number | null) => void;
   toggleImportant: (id: number) => void;
-  // setCompletedTodo: (id: number) => void;
 }
 
 const TodoItem: React.FC<TodoItemProps> = ({
@@ -33,17 +32,8 @@ const TodoItem: React.FC<TodoItemProps> = ({
   setOpenTooltipId,
   toggleImportant,
 }) => {
-  const removeTodo = useTodoStore((state) => state.removeTodo);
-  const removeTodoItem = (id: number) => {
-    removeTodo(id);
-  };
-
-  const setCompletedTodo = useTodoStore((state) => state.setCompletedTodo);
-
+  const { removeTodo, setCompletedTodo, setModiTodo } = useTodoStore();
   const { openPopup } = usePopupStore();
-  const { setModiTodo } = useTodoStore();
-  // const { isComplted } = useTodoStore();
-
   const openModiPopup = () => {
     setModiTodo(todo);
     openPopup();
@@ -84,7 +74,7 @@ const TodoItem: React.FC<TodoItemProps> = ({
               </button>
               <button
                 className="flex w-full items-center py-[10px]"
-                onClick={() => removeTodoItem(todo.id)}
+                onClick={() => removeTodo(todo.id)}
               >
                 <BsTrash />
                 <p className="ml-[5px]">할 일 삭제</p>

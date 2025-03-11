@@ -7,9 +7,7 @@ const AddPopup: React.FC = () => {
   const [title, setTitle] = useState<string>("");
   const [date, setDate] = useState<string>("");
   const [content, setContent] = useState<string>("");
-  const addTodo = useTodoStore((state) => state.addTodo);
-  const modifyTodo = useTodoStore((state) => state.modifyTodo);
-  const { modiTodo } = useTodoStore();
+  const { addTodo, modifyTodo, modiTodo } = useTodoStore();
   const today = new Date().toISOString().split("T")[0];
 
   useEffect(() => {
