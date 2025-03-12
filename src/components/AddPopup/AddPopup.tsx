@@ -2,12 +2,15 @@ import React, { useState, useEffect } from "react";
 import { BsXLg } from "react-icons/bs";
 import { usePopupStore } from "../../store/usePopup";
 import { useTodoStore } from "../../store/useTodo";
+import { db } from "../../firebaseApp";
+import { collection, addDoc, doc, updateDoc } from "firebase/firestore";
+import { auth } from "../../firebaseApp";
 
 const AddPopup: React.FC = () => {
   const [title, setTitle] = useState<string>("");
   const [date, setDate] = useState<string>("");
   const [content, setContent] = useState<string>("");
-  const { addTodo, modifyTodo, modiTodo } = useTodoStore();
+  const { modiTodo, getTodos } = useTodoStore();
   const today = new Date().toISOString().split("T")[0];
 
   useEffect(() => {
@@ -20,26 +23,43 @@ const AddPopup: React.FC = () => {
       setContent("");
       setDate("");
     }
+
+    console.log("modiTodo", modiTodo);
   }, [modiTodo]);
 
-  const handleSubmit = (e: { preventDefault: () => void }) => {
+  const handleSubmit = async (e: { preventDefault: () => void }) => {
     e.preventDefault();
 
-    if (!title || !date || !content) {
-      alert("항목을 모두 입력 해주세요");
-      return;
+    try {
+      if (!modiTodo) {
+        setTitle("");
+        setDate("");
+        setContent("");
+        await addDoc(collection(db, "todos"), {
+          title: title,
+          content: content,
+          date: date,
+          isCompleted: false,
+          isImportant: false,
+          email: auth.currentUser?.email,
+        });
+        if (getTodos) await getTodos();
+        closePopup();
+      } else {
+        // modifyTodo(modiTodo.id, title, date, content);
+        const TodoRef = doc(db, "todos", modiTodo.id);
+        await updateDoc(TodoRef, {
+          title: title,
+          content: content,
+          date: date,
+        });
+        getTodos();
+        closePopup();
+      }
+    } catch (error) {
+      alert(error);
     }
-
-    if (!modiTodo) {
-      addTodo(title, date, content);
-      setTitle("");
-      setDate("");
-      setContent("");
-      closePopup();
-    } else {
-      modifyTodo(modiTodo.id, title, date, content);
-      closePopup();
-    }
+    console.log("modiTodo", modiTodo);
   };
 
   const { isOpen, closePopup } = usePopupStore();
@@ -57,6 +77,7 @@ const AddPopup: React.FC = () => {
             onChange={(e) => {
               setTitle(e.target.value);
             }}
+            required
           />
           <div className="flex mt-[30px]">
             <label htmlFor="date" className="mr-[20px]">
@@ -74,6 +95,7 @@ const AddPopup: React.FC = () => {
                 }
                 setDate(e.target.value);
               }}
+              required
             />
           </div>
           <div className="flex mt-[30px]">
@@ -90,6 +112,7 @@ const AddPopup: React.FC = () => {
               onChange={(e) => {
                 setContent(e.target.value);
               }}
+              required
             ></textarea>
           </div>
           <div className="text-right mt-[30px]">

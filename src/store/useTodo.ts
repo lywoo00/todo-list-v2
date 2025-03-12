@@ -1,7 +1,9 @@
 import { create } from "zustand";
+import { collection, getDocs, doc, updateDoc } from "firebase/firestore";
+import { db } from "../firebaseApp";
 
 interface Todo {
-  id: number;
+  id: string;
   title: string;
   date: string;
   content: string;
@@ -16,23 +18,18 @@ interface TodoStore {
   completedTodos: Todo[];
   updatedTodos: Todo[];
   addTodo: (title: string, date: string, content: string) => void;
-  removeTodo: (id: number) => void;
-  modifyTodo: (
-    id: number,
-    title: string,
-    date: string,
-    content: string
-  ) => void;
+  removeTodo: (id: string) => void;
   setModiTodo: (todo: Todo) => void;
   resetModiTodo: () => void;
-  toggleImportant: (id: number) => void;
   setImportantTodo: () => void;
   setAllTodo: () => void;
   removeTodoAll: () => void;
-  setCompletedTodo: (id: number) => void;
-  removeCompletedTodo: (id: number) => void;
+  setCompletedTodo: (todo: Todo) => void;
+  removeCompletedTodo: (id: string) => void;
   setCompletedAllTodo: () => void;
-  setIncompleteTodo: (id: number) => void;
+  // setIncompleteTodo: (id: string) => void;
+  getTodos: () => void;
+  toggleImportantTodo: (todo: Todo) => void;
 }
 
 // ✅ Zustand 스토어 생성
@@ -43,12 +40,38 @@ export const useTodoStore = create<TodoStore>((set) => ({
   completedTodos: [],
   updatedTodos: [],
 
+  getTodos: async () => {
+    const todosSnapshot = await getDocs(collection(db, "todos"));
+    const todosList = todosSnapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    })) as Todo[];
+
+    set({
+      todos: todosList,
+    });
+  },
+
+  toggleImportantTodo: async (todo) => {
+    const TodoRef = doc(db, "todos", todo.id);
+    await updateDoc(TodoRef, {
+      isImportant: !todo.isImportant,
+    });
+  },
+
+  setCompletedTodo: async (todo) => {
+    const TodoRef = doc(db, "todos", todo.id);
+    await updateDoc(TodoRef, {
+      isCompleted: !todo.isCompleted,
+    });
+  },
+
   addTodo: (title, date, content) =>
     set((state) => ({
       todos: [
         ...state.todos,
         {
-          id: Date.now(),
+          id: Date.now().toString(),
           title,
           date,
           content,
@@ -68,21 +91,6 @@ export const useTodoStore = create<TodoStore>((set) => ({
       todos: [],
     })),
 
-  modifyTodo: (id, title, date, content) =>
-    set((state) => ({
-      todos: state.todos.map((todo) =>
-        todo.id === id
-          ? {
-              ...todo,
-              title,
-              date,
-              content,
-            }
-          : todo
-      ),
-      modiTodo: null,
-    })),
-
   setModiTodo: (todo) =>
     set({
       modiTodo: todo,
@@ -92,14 +100,6 @@ export const useTodoStore = create<TodoStore>((set) => ({
     set({
       modiTodo: null,
     }),
-
-  toggleImportant: (id) =>
-    set((state) => ({
-      todos: state.todos.map(
-        (todo) =>
-          todo.id === id ? { ...todo, isImportant: !todo.isImportant } : todo //체크한 아이템만 isImportant 반전
-      ),
-    })),
 
   setImportantTodo: () =>
     set((state) => ({
@@ -123,21 +123,6 @@ export const useTodoStore = create<TodoStore>((set) => ({
       ], // todos에 중복되지 않은 filteredTodos에 필터 된 일을 복사
     })),
 
-  setCompletedTodo: (id) =>
-    set((state) => {
-      state.updatedTodos = state.todos.map((todo) =>
-        todo.id === id ? { ...todo, isCompleted: true } : todo
-      ); // 완료 체크된 todo의 isCompleted 값을 true로 변경
-
-      return {
-        completedTodos: [
-          ...state.completedTodos,
-          ...state.updatedTodos.filter((todo) => todo.isCompleted),
-        ], // 완료된 todo 목록
-        todos: [...state.updatedTodos.filter((todo) => !todo.isCompleted)], // 미완료된 todo 목록
-      };
-    }),
-
   setCompletedAllTodo: () =>
     set((state) => {
       state.updatedTodos = state.todos.map((todo) => ({
@@ -158,21 +143,4 @@ export const useTodoStore = create<TodoStore>((set) => ({
     set((state) => ({
       completedTodos: state.completedTodos.filter((todo) => todo.id !== id),
     })),
-
-  setIncompleteTodo: (id) =>
-    set((state) => {
-      state.updatedTodos = state.completedTodos.map((todo) =>
-        todo.id === id ? { ...todo, isCompleted: false } : todo
-      );
-
-      return {
-        completedTodos: [
-          ...state.updatedTodos.filter((todo) => todo.isCompleted),
-        ], // 완료 상태 할 일만 필터
-        todos: [
-          ...state.todos,
-          ...state.updatedTodos.filter((todo) => !todo.isCompleted),
-        ], // 미완료된 할 일만 필터
-      };
-    }),
 }));

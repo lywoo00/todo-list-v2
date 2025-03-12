@@ -1,15 +1,17 @@
 // import React, { useState } from "react";
-import { BsCheck } from "react-icons/bs";
-import { BsTrash } from "react-icons/bs";
-import { BsStar } from "react-icons/bs";
-import { BsStarFill } from "react-icons/bs";
-import { BsThreeDotsVertical } from "react-icons/bs";
-import { BsPencil } from "react-icons/bs";
+import {
+  BsCheck,
+  BsTrash,
+  BsStar,
+  BsStarFill,
+  BsThreeDotsVertical,
+  BsPencil,
+} from "react-icons/bs";
 import { useTodoStore } from "../../store/useTodo";
 import { usePopupStore } from "../../store/usePopup";
 
 interface Todo {
-  id: number;
+  id: string;
   title: string;
   date: string;
   content: string;
@@ -19,10 +21,10 @@ interface Todo {
 
 interface TodoItemProps {
   todo: Todo;
-  openTooltipId: number | null;
-  toggleTooltip: (id: number) => void;
-  setOpenTooltipId: (id: number | null) => void;
-  toggleImportant: (id: number) => void;
+  openTooltipId: string | null;
+  toggleTooltip: (id: string) => void;
+  setOpenTooltipId: (id: string | null) => void;
+  // toggleImportant: (id: string) => void;
 }
 
 const TodoItem: React.FC<TodoItemProps> = ({
@@ -30,9 +32,9 @@ const TodoItem: React.FC<TodoItemProps> = ({
   openTooltipId,
   toggleTooltip,
   setOpenTooltipId,
-  toggleImportant,
 }) => {
-  const { removeTodo, setCompletedTodo, setModiTodo } = useTodoStore();
+  const { removeTodo, setModiTodo, toggleImportantTodo, setCompletedTodo } =
+    useTodoStore();
   const { openPopup } = usePopupStore();
   const openModiPopup = () => {
     setModiTodo(todo);
@@ -44,7 +46,7 @@ const TodoItem: React.FC<TodoItemProps> = ({
       <button
         title="완료 체크"
         className="text-gray-300 dark:text-gray-400 text-xlarge hover:text-defualt group"
-        onClick={() => setCompletedTodo(todo.id)}
+        onClick={() => setCompletedTodo(todo)}
       >
         <BsCheck className="group-hover:text-172b4d" />
       </button>
@@ -56,7 +58,7 @@ const TodoItem: React.FC<TodoItemProps> = ({
         </span>
       </div>
       <div className="flex">
-        <button title="중요" onClick={() => toggleImportant(todo.id)}>
+        <button title="중요" onClick={() => toggleImportantTodo(todo)}>
           {todo.isImportant ? <BsStarFill /> : <BsStar />}
         </button>
         <div className="relative ml-[10px]">

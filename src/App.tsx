@@ -28,6 +28,8 @@ function App() {
     });
   }, [auth]);
 
+  console.log("auth", auth.currentUser?.email);
+
   return (
     <>
       <ToastContainer />

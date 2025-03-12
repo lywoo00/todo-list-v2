@@ -3,26 +3,26 @@ import { useState } from "react";
 import { useTodoStore } from "../../store/useTodo";
 import { BsCheck, BsTrash, BsChevronUp, BsChevronDown } from "react-icons/bs";
 
-interface Todo {
-  id: number;
-  title: string;
-  date: string;
-  content: string;
-  isImportant: boolean;
-  isCompleted: boolean;
-}
+// interface Todo {
+//   id: number;
+//   title: string;
+//   date: string;
+//   content: string;
+//   isImportant: boolean;
+//   isCompleted: boolean;
+// }
 const TodoCompleted: React.FC = () => {
   const [toggleCompleted, setToggleCompleted] = useState(false);
   const toggleCompletedWork = () => {
     setToggleCompleted((prev) => !prev);
   };
 
-  const { completedTodos } = useTodoStore();
+  const { todos, setCompletedTodo } = useTodoStore();
   const removeCompletedTodo = useTodoStore(
     (state) => state.removeCompletedTodo
   );
 
-  const setIncompleteTodo = useTodoStore((state) => state.setIncompleteTodo);
+  // const setIncompleteTodo = useTodoStore((state) => state.setIncompleteTodo);
 
   return (
     <div className="mt-[20px]">
@@ -33,42 +33,44 @@ const TodoCompleted: React.FC = () => {
         }}
       >
         <p className="text-small/[1.4] mr-[10px]">
-          완료된 일({completedTodos.length})
+          완료된 일({todos.filter((todo) => todo.isCompleted).length})
         </p>
         {toggleCompleted ? <BsChevronUp /> : <BsChevronDown />}
       </button>
 
       {toggleCompleted
-        ? completedTodos.map((completedTodo: Todo) => (
-            <div
-              key={completedTodo.id}
-              className="flex items-start p-[10px] hover:bg-f1f1f1 rounded-basic"
-            >
-              <button
-                title="미완료 상태로 변경"
-                className="text-gray-300 dark:text-gray-400 text-large hover:text-172b4d"
-                onClick={() => setIncompleteTodo(completedTodo.id)}
+        ? todos
+            .filter((todo) => todo.isCompleted)
+            .map((todo) => (
+              <div
+                key={todo.id}
+                className="flex items-start p-[10px] hover:bg-f1f1f1 rounded-basic"
               >
-                <BsCheck />
-              </button>
-              <div className="ml-[10px] w-full">
-                <p className="text-default/[1.4] line-through">
-                  {completedTodo.title}
-                </p>
-                <p className="text-666 mt-[6px]">{completedTodo.content}</p>
-                <span className="border inline-block rounded-basic text-xsmall/[1] px-[10px] py-[4px] mt-[6px] bg-white dark:bg-172b4d dark:text-gray-300">
-                  {completedTodo.date}
-                </span>
+                <button
+                  title="미완료 상태로 변경"
+                  className="text-gray-300 dark:text-gray-400 text-large hover:text-172b4d"
+                  onClick={() => setCompletedTodo(todo)}
+                >
+                  <BsCheck />
+                </button>
+                <div className="ml-[10px] w-full">
+                  <p className="text-default/[1.4] line-through">
+                    {todo.title}
+                  </p>
+                  <p className="text-666 mt-[6px]">{todo.content}</p>
+                  <span className="border inline-block rounded-basic text-xsmall/[1] px-[10px] py-[4px] mt-[6px] bg-white dark:bg-172b4d dark:text-gray-300">
+                    {todo.date}
+                  </span>
+                </div>
+                <button
+                  title="삭제"
+                  className=""
+                  onClick={() => removeCompletedTodo(todo.id)}
+                >
+                  <BsTrash />
+                </button>
               </div>
-              <button
-                title="삭제"
-                className=""
-                onClick={() => removeCompletedTodo(completedTodo.id)}
-              >
-                <BsTrash />
-              </button>
-            </div>
-          ))
+            ))
         : null}
     </div>
   );

@@ -3,12 +3,16 @@ import { useState } from "react";
 import { useTodoStore } from "../../store/useTodo";
 import TodoItem from "./TodoItem";
 import TodoCompleted from "./TodoCompleted";
-import { BsCheckCircle } from "react-icons/bs";
-import { BsCheckCircleFill } from "react-icons/bs";
-import { BsTrash, BsStarFill, BsThreeDotsVertical } from "react-icons/bs";
+import {
+  BsCheckCircle,
+  BsCheckCircleFill,
+  BsTrash,
+  BsStarFill,
+  BsThreeDotsVertical,
+} from "react-icons/bs";
 
-interface Todo {
-  id: number;
+export interface Todo {
+  id: string;
   title: string;
   date: string;
   content: string;
@@ -19,28 +23,35 @@ interface Todo {
 const TodoList: React.FC = () => {
   const {
     todos,
-    toggleImportant,
     setImportantTodo,
     removeTodoAll,
     setCompletedAllTodo,
+    getTodos,
   } = useTodoStore();
-
   const [fullOptionTooltip, setFullOptionTooltip] = useState<boolean>(false);
+  const [openTooltipId, setOpenTooltipId] = useState<string | null>(null);
+
   const toggleFullOptionTooltip = () => {
     setFullOptionTooltip((prev) => !prev);
     setOpenTooltipId(null);
   };
-  const [openTooltipId, setOpenTooltipId] = useState<number | null>(null);
 
-  const toggleTooltip = (id: number) => {
+  const toggleTooltip = (id: string) => {
     setOpenTooltipId((prevId) => (prevId === id ? null : id));
     setFullOptionTooltip(false);
   };
 
   useEffect(() => {
-    setFullOptionTooltip(false);
-    setOpenTooltipId(null);
+    // setFullOptionTooltip(false);
+    // setOpenTooltipId(null);
+    // getTodos();
   }, [todos]); // todos가 변경되면 툴팁 닫기 나중에 더 좋은 방법 있나 생각하기
+
+  useEffect(() => {
+    getTodos();
+  }, []);
+  // getTodos();
+  console.log("todos", todos);
 
   return (
     <>
@@ -89,16 +100,17 @@ const TodoList: React.FC = () => {
               <p className="ml-[10px] text-large">전체 완료</p>
             </button>
             {/* 할 일 아이템[S] */}
-            {todos.map((todo: Todo) => (
-              <TodoItem
-                key={todo.id}
-                todo={todo}
-                openTooltipId={openTooltipId}
-                toggleTooltip={toggleTooltip}
-                setOpenTooltipId={setOpenTooltipId}
-                toggleImportant={toggleImportant}
-              />
-            ))}
+            {todos
+              .filter((todo) => !todo.isCompleted)
+              .map((todo: Todo) => (
+                <TodoItem
+                  key={todo.id}
+                  todo={todo}
+                  openTooltipId={openTooltipId}
+                  toggleTooltip={toggleTooltip}
+                  setOpenTooltipId={setOpenTooltipId}
+                />
+              ))}
             {/* 할 일 아이템[E] */}
           </div>
 
