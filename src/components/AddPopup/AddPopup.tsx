@@ -12,6 +12,7 @@ const AddPopup: React.FC = () => {
   const [content, setContent] = useState<string>("");
   const { modiTodo, getTodos } = useTodoStore();
   const today = new Date().toISOString().split("T")[0];
+  const { isOpen, closePopup } = usePopupStore();
 
   useEffect(() => {
     if (modiTodo) {
@@ -31,11 +32,16 @@ const AddPopup: React.FC = () => {
     e.preventDefault();
 
     try {
+      const user = auth.currentUser;
+      if (!user) alert("로그인이 필요합니다.");
+
+      const userTodosRef = collection(db, "users", user.uid, "todos");
       if (!modiTodo) {
         setTitle("");
         setDate("");
         setContent("");
-        await addDoc(collection(db, "todos"), {
+
+        await addDoc(userTodosRef, {
           title: title,
           content: content,
           date: date,
@@ -46,8 +52,7 @@ const AddPopup: React.FC = () => {
         if (getTodos) await getTodos();
         closePopup();
       } else {
-        // modifyTodo(modiTodo.id, title, date, content);
-        const TodoRef = doc(db, "todos", modiTodo.id);
+        const TodoRef = doc(db, "users", user.uid, "todos", modiTodo.id);
         await updateDoc(TodoRef, {
           title: title,
           content: content,
@@ -59,10 +64,7 @@ const AddPopup: React.FC = () => {
     } catch (error) {
       alert(error);
     }
-    console.log("modiTodo", modiTodo);
   };
-
-  const { isOpen, closePopup } = usePopupStore();
 
   if (!isOpen) return null;
   return (

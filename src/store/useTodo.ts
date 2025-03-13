@@ -6,7 +6,7 @@ import {
   updateDoc,
   deleteDoc,
 } from "firebase/firestore";
-import { db } from "../firebaseApp";
+import { db, auth } from "../firebaseApp";
 
 interface Todo {
   id: string;
@@ -31,12 +31,11 @@ interface TodoStore {
   deleteTodoAll: () => void;
   setCompletedTodo: (todo: Todo) => void;
   setCompletedTodoAll: () => void;
-  // setIncompleteTodo: (id: string) => void;
   getTodos: () => void;
   toggleImportantTodo: (todo: Todo) => void;
 }
 
-// ✅ Zustand 스토어 생성
+// Zustand 스토어 생성
 export const useTodoStore = create<TodoStore>((set) => ({
   todos: [],
   modiTodo: null,
@@ -45,22 +44,25 @@ export const useTodoStore = create<TodoStore>((set) => ({
   updatedTodos: [],
 
   getTodos: async () => {
-    const todosSnapshot = await getDocs(collection(db, "todos"));
+    const user = auth.currentUser;
+    if (!user) return;
+    const TodoRef = collection(db, "users", user.uid, "todos");
+    const todosSnapshot = await getDocs(TodoRef);
     const todosList = todosSnapshot.docs.map((doc) => ({
       id: doc.id,
       ...doc.data(),
     })) as Todo[];
-
     set((state) => {
       if (JSON.stringify(state.todos) !== JSON.stringify(todosList)) {
         return { todos: todosList };
       }
-      return state; // 변경이 없으면 상태 업데이트 안 함
+      return state;
     });
   },
 
   toggleImportantTodo: async (todo) => {
-    const TodoRef = doc(db, "todos", todo.id);
+    const user = auth.currentUser;
+    const TodoRef = doc(db, "users", user.uid, "todos", todo.id);
     await updateDoc(TodoRef, {
       isImportant: !todo.isImportant,
     });
@@ -72,7 +74,8 @@ export const useTodoStore = create<TodoStore>((set) => ({
   },
 
   setCompletedTodo: async (todo) => {
-    const TodoRef = doc(db, "todos", todo.id);
+    const user = auth.currentUser;
+    const TodoRef = doc(db, "users", user.uid, "todos", todo.id);
     await updateDoc(TodoRef, {
       isCompleted: !todo.isCompleted,
     });
@@ -85,9 +88,14 @@ export const useTodoStore = create<TodoStore>((set) => ({
   },
 
   setCompletedTodoAll: async () => {
-    const todosSnapshot = await getDocs(collection(db, "todos"));
+    const user = auth.currentUser;
+    if (!user) return;
+
+    const TodoRef = collection(db, "users", user.uid, "todos");
+    const todosSnapshot = await getDocs(TodoRef);
+
     const completedTodosAll = todosSnapshot.docs.map((todo) =>
-      updateDoc(doc(db, "todos", todo.id), {
+      updateDoc(doc(db, "users", user.uid, "todos", todo.id), {
         isCompleted: true,
       })
     );
@@ -97,8 +105,12 @@ export const useTodoStore = create<TodoStore>((set) => ({
       todos: state.todos.map((todo) => ({ ...todo, isCompleted: true })),
     }));
   },
+
   deleteTodo: async (todo) => {
-    if (todo.id) await deleteDoc(doc(db, "todos", todo.id));
+    const user = auth.currentUser;
+    if (!user) return;
+
+    if (todo.id) await deleteDoc(doc(db, "users", user.uid, "todos", todo.id));
 
     set((state) => ({
       todos: state.todos.filter((t) => t.id !== todo.id),
@@ -106,9 +118,13 @@ export const useTodoStore = create<TodoStore>((set) => ({
   },
 
   deleteTodoAll: async () => {
-    const todosSnapshot = await getDocs(collection(db, "todos"));
+    const user = auth.currentUser;
+    if (!user) return;
+
+    const TodoRef = collection(db, "users", user.uid, "todos");
+    const todosSnapshot = await getDocs(TodoRef);
     const deleteTodoAll = todosSnapshot.docs.map((todo) =>
-      deleteDoc(doc(db, "todos", todo.id))
+      deleteDoc(doc(db, "users", user.uid, "todos", todo.id))
     );
     await Promise.all(deleteTodoAll);
     set(() => ({
@@ -147,20 +163,4 @@ export const useTodoStore = create<TodoStore>((set) => ({
         ),
       ], // todos에 중복되지 않은 filteredTodos에 필터 된 일을 복사
     })),
-
-  // setCompletedAllTodo: () =>
-  //   set((state) => {
-  //     state.updatedTodos = state.todos.map((todo) => ({
-  //       ...todo,
-  //       isCompleted: true,
-  //     }));
-
-  //     return {
-  //       completedTodos: [
-  //         ...state.completedTodos,
-  //         ...state.updatedTodos.filter((todo) => todo.isCompleted),
-  //       ], // 완료된 todo 목록
-  //       todos: [],
-  //     };
-  //   }),
 }));
