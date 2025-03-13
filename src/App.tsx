@@ -36,15 +36,15 @@ function App() {
         <Routes>
           {isAuthenticated ? (
             <>
-              <Route path="/todo-list-v2/" element={<Main />} />
-              {/* <Route path="/todo-list-v2/login" element={<Login />} />
-              <Route path="/todo-list-v2/signup" element={<SignUp />} /> */}
+              <Route path="/" element={<Main />} />
+              {/* <Route path="login" element={<Login />} />
+              <Route path="signup" element={<SignUp />} /> */}
               <Route path="*" element={<Main />} />
             </>
           ) : (
             <>
-              <Route path="/todo-list-v2/login" element={<Login />} />
-              <Route path="/todo-list-v2/signup" element={<SignUp />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/signup" element={<SignUp />} />
               <Route path="*" element={<Login />} />
             </>
           )}

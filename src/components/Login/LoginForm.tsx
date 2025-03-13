@@ -111,7 +111,7 @@ const LoginForm = () => {
             </button>
           </div>
           <div className="text-right text-small">
-            <Link to="/todo-list-v2/signup">회원가입</Link>
+            <Link to="/signup">회원가입</Link>
           </div>
         </form>
       </div>
