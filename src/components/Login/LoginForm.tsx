@@ -16,7 +16,7 @@ const LoginForm = () => {
 
     try {
       await signInWithEmailAndPassword(auth, userEmail, userPw);
-      navigate("/todo-list-v2/");
+      navigate("/");
       toast.success("로그인에 성공했습니다.");
     } catch (error: unknown) {
       if (error instanceof FirebaseError) {

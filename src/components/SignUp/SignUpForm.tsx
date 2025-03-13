@@ -16,7 +16,7 @@ function SignUpForm() {
     e.preventDefault();
     try {
       await createUserWithEmailAndPassword(auth, userEmail, userPw);
-      navigate("/todo-list-v2/");
+      navigate("/");
       toast.success("회원가입에 성공했습니다.");
     } catch (error: unknown) {
       if (error instanceof FirebaseError) {
@@ -131,7 +131,7 @@ function SignUpForm() {
           )}
           <div className="mt-1">
             <span className="text-small mr-2">계정이 이미 있으신가요?</span>
-            <Link to="/todo-list-v2/login" className="text-small text-gray-500">
+            <Link to="/login" className="text-small text-gray-500">
               로그인 하기
             </Link>
           </div>
