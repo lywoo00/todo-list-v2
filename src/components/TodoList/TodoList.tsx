@@ -24,8 +24,8 @@ const TodoList: React.FC = () => {
   const {
     todos,
     setImportantTodo,
-    removeTodoAll,
-    setCompletedAllTodo,
+    deleteTodoAll,
+    setCompletedTodoAll,
     getTodos,
   } = useTodoStore();
   const [fullOptionTooltip, setFullOptionTooltip] = useState<boolean>(false);
@@ -42,10 +42,8 @@ const TodoList: React.FC = () => {
   };
 
   useEffect(() => {
-    // setFullOptionTooltip(false);
-    // setOpenTooltipId(null);
-    // getTodos();
-  }, [todos]); // todos가 변경되면 툴팁 닫기 나중에 더 좋은 방법 있나 생각하기
+    setFullOptionTooltip(false);
+  }, [todos]);
 
   useEffect(() => {
     getTodos();
@@ -72,7 +70,7 @@ const TodoList: React.FC = () => {
                 <div className="absolute w-[200px] bg-white dark:bg-gray-300 shadow-sm px-[20px] py-[10px] rounded-basic top-[100%] right-0 z-11">
                   <button
                     className="flex w-full items-center py-[10px] border-b border-[#dfdfdf]"
-                    onClick={() => removeTodoAll()}
+                    onClick={() => deleteTodoAll()}
                   >
                     <BsTrash />
                     <p className="ml-[5px]">전체 할 일 삭제</p>
@@ -91,7 +89,7 @@ const TodoList: React.FC = () => {
           <div className="mt-[20px]">
             <button
               className="group text-xlarge flex items-center font-bold "
-              onClick={() => setCompletedAllTodo()}
+              onClick={() => setCompletedTodoAll()}
             >
               <div className="p-[2px]">
                 <BsCheckCircle className="group-hover:hidden" />

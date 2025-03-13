@@ -33,7 +33,7 @@ const TodoItem: React.FC<TodoItemProps> = ({
   toggleTooltip,
   setOpenTooltipId,
 }) => {
-  const { removeTodo, setModiTodo, toggleImportantTodo, setCompletedTodo } =
+  const { deleteTodo, setModiTodo, toggleImportantTodo, setCompletedTodo } =
     useTodoStore();
   const { openPopup } = usePopupStore();
   const openModiPopup = () => {
@@ -41,6 +41,7 @@ const TodoItem: React.FC<TodoItemProps> = ({
     openPopup();
     setOpenTooltipId(null);
   };
+
   return (
     <div className="flex items-start p-[10px] hover:bg-f1f1f1 rounded-basic">
       <button
@@ -76,7 +77,7 @@ const TodoItem: React.FC<TodoItemProps> = ({
               </button>
               <button
                 className="flex w-full items-center py-[10px]"
-                onClick={() => removeTodo(todo.id)}
+                onClick={() => deleteTodo(todo)}
               >
                 <BsTrash />
                 <p className="ml-[5px]">할 일 삭제</p>

@@ -17,10 +17,7 @@ const TodoCompleted: React.FC = () => {
     setToggleCompleted((prev) => !prev);
   };
 
-  const { todos, setCompletedTodo } = useTodoStore();
-  const removeCompletedTodo = useTodoStore(
-    (state) => state.removeCompletedTodo
-  );
+  const { todos, setCompletedTodo, deleteTodo } = useTodoStore();
 
   // const setIncompleteTodo = useTodoStore((state) => state.setIncompleteTodo);
 
@@ -65,7 +62,7 @@ const TodoCompleted: React.FC = () => {
                 <button
                   title="삭제"
                   className=""
-                  onClick={() => removeCompletedTodo(todo.id)}
+                  onClick={() => deleteTodo(todo)}
                 >
                   <BsTrash />
                 </button>

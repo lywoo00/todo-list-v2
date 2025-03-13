@@ -11,7 +11,6 @@ import "./css/tailwindcss/tailwind.css";
 function App() {
   //auth를 체크하기 전에 loader 띄워주기
   const [init, setInit] = useState<boolean>(false);
-
   // firebase Auth가 인증되었으면 true
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(
     !!auth?.currentUser
@@ -28,7 +27,7 @@ function App() {
     });
   }, [auth]);
 
-  console.log("auth", auth.currentUser?.email);
+  console.log("auth", auth.currentUser?.uid.toString());
 
   return (
     <>
